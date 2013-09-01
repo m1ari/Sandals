@@ -4,7 +4,10 @@ This is an attempt at bit banging a GPIO Pin to generate RTTY rather than sharin
 
 Features To Add
  * Set System Date and Time if not already set
- * UBlox specific features in GPS Class
+ * GPS
+   * Configure serial port via class
+   * Track number of seen sats (and which ones)
+   * UBlox specific features in GPS Class
  * Images
    * Grab Images from Pi CAM
    * SSDV
@@ -16,7 +19,6 @@ Features To Add
  * DominoEX
 
  * Telem String
-   * Add Altitude
    * Add Satellite count & Lock indicator
    * Maidenhead locator
 
