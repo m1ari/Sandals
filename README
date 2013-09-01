@@ -1,0 +1,38 @@
+Pi Based Tracker written in multithreaded C++
+
+This is an attempt at bit banging a GPIO Pin to generate RTTY rather than sharing the UART with GPS and Radio Module
+
+Features To Add
+ * Set System Date and Time if not already set
+ * UBlox specific features in GPS Class
+ * Images
+   * Grab Images from Pi CAM
+   * SSDV
+   * Add Location EXIF Data to images
+ * APRS
+   * PWM on GPIO, or Soundard
+ * RTTY
+   * Only change baud rate/bits when a new string is selected
+ * DominoEX
+
+ * Telem String
+   * Add Altitude
+   * Add Satellite count & Lock indicator
+   * Maidenhead locator
+
+
+Possible future changes
+  * Move RTTY / DominoEX into kernel space
+  * Use timer interupt for timing (rather than usleep)
+
+
+
+Typing changes
+  use the C++ String Class rather than char*
+  use unint16_t from <csdtint> instead of "unsigned short int" for checksum
+
+
+
+
+RTTY (PWM or kernel module)
+	dma pwm http://pythonhosted.org/RPIO/pwm_py.html
