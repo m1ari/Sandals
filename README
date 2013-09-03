@@ -2,10 +2,13 @@ Pi Based Tracker written in multithreaded C++
 
 This is an attempt at bit banging a GPIO Pin to generate RTTY rather than sharing the UART with GPS and Radio Module
 
+No warranty of the fitness of this code for any purpose is given, As it's directly accessing the memory used for the GPIO interface it could cause kernel panics (or worse), backup and backup often. You have been warned!
+
+
+
 Features To Add
  * Set System Date and Time if not already set
  * GPS
-   * Configure serial port via class
    * Track number of seen sats (and which ones)
    * UBlox specific features in GPS Class
  * Images
@@ -14,26 +17,16 @@ Features To Add
    * Add Location EXIF Data to images
  * APRS
    * PWM on GPIO, or Soundard
- * RTTY
-   * Only change baud rate/bits when a new string is selected
  * DominoEX
-
- * Telem String
-   * Add Satellite count & Lock indicator
-   * Maidenhead locator
 
 
 Possible future changes
   * Move RTTY / DominoEX into kernel space
   * Use timer interupt for timing (rather than usleep)
 
-
-
 Typing changes
   use the C++ String Class rather than char*
   use unint16_t from <csdtint> instead of "unsigned short int" for checksum
-
-
 
 
 RTTY (PWM or kernel module)
