@@ -216,11 +216,9 @@ void GPS::nmeaGPGGA(char *nmea){
 							Position.setLongitude(pos,token);
 						break;
 						case 6:	// Lock
-							printf("GPGGA(fix): %s\n",token);
 							Position.setFix(token);
 						break;
 						case 7:	// Sats
-							printf("GPGGA(sats): %s\n",token);
 							Position.setSats(token);
 							// 07
 						break;
