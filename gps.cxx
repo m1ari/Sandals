@@ -15,7 +15,13 @@ using namespace std;
 
 GPS::GPS(){
 	uart0_filestream = -1;
-	gps_run=true;
+	gps_run=false;
+	deviceopen=false;
+	device="";
+	baud=B9600;
+	bits=8;
+	stopbits=1;
+	parity='N';
 }
 
 GPS::~GPS(){
@@ -32,11 +38,40 @@ GPSPosition GPS::GetPosition(){
 	return(n);
 }
 
-void GPS::Setup(){
-	syslog(LOG_NOTICE,"GPS: Setup");
+void GPS::setDevice(std::string d){
+	device=d;
+	syslog(LOG_NOTICE,"GPS: Configuring to use device %s",device.c_str());
+	if(deviceopen){
+		syslog(LOG_ERR,"GPS: Device configured but won't be used until GPS restarted");
+	}
+}
+
+void GPS::setBaud(int b){
+	syslog(LOG_ERR,"GPS: setBaud - Not yet Implimented");
+}
+
+void GPS::setBits(int b){
+	syslog(LOG_ERR,"GPS: setBits - Not yet Implimented");
+}
+
+void GPS::setStopBits(int b){
+	syslog(LOG_ERR,"GPS: setStopBits - Not yet Implimented");
+}
+
+void GPS::setParity(char p){
+	syslog(LOG_ERR,"GPS: setParity - Not yet Implimented");
+}
+
+void GPS::setType(gpsType t){
+	syslog(LOG_ERR,"GPS: setType - Not yet Implimented");
+	syslog(LOG_NOTICE,"GPS: Setting Type to %d",t);
+}
+
+void GPS::gps_open(){
+	syslog(LOG_NOTICE,"GPS: Open Port");
 
 	//Open in non blocking read/write mode
-	uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
+	uart0_filestream = open(device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY);
 	if (uart0_filestream == -1) {
 		syslog(LOG_ERR,"GPS: Unable to open UART.");
 	}
@@ -50,26 +85,33 @@ void GPS::Setup(){
 	options.c_lflag = 0;
 	tcflush(uart0_filestream, TCIFLUSH);
 	tcsetattr(uart0_filestream, TCSANOW, &options);
+
+	deviceopen=true;
 }
 
 void GPS::Stop(){
 	syslog(LOG_NOTICE,"GPS: Stopping Thread");
 	gps_run=false;
-	// Wait for thread to stop
-	// pthread_join ??
 	pthread_join(threadid,NULL);
+	// gps_close()
 	syslog(LOG_NOTICE,"GPS: Thread Stopped");
 }
 
 void GPS::Run(){
+	syslog(LOG_NOTICE,"GPS: Creating Thread");
+	// Setup GPS Port
+	gps_open();
+
+	// Should check the GPS port is configured
+	gps_run=true;
 	pthread_create(&threadid,NULL,&GPS::entryPoint,this);
 }
+
 void* GPS::entryPoint(void *pthis){
 	GPS *self= (GPS*)pthis;
 	self->parserThread();
 	pthread_exit(0);
 }
-
 
 void GPS::parserThread(){
 	syslog(LOG_NOTICE,"GPS: Thread starting");

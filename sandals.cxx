@@ -30,11 +30,15 @@ int main (int argc, char **argv){
 
 	long int counter=0;
 
+	// Create objects we're going to use
 	GPS gps;
 	GPSPosition location;
 	RTTY rtty;
 
-	gps.Setup();
+	// Configure GPS and start the thread.
+	gps.setDevice("/dev/ttyAMA0");
+	gps.setBaud(9600);
+	gps.setType(gpsUBLOX);
 	gps.Run();
 
 	rtty.setBaud(300);
