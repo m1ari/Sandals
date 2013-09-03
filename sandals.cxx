@@ -51,22 +51,41 @@ int main (int argc, char **argv){
 	int queue=0;
 	char queuestr[100];
 	while (systemloop){
+		// Get information from our threaded classes
 		location=gps.GetPosition();
 		counter=rtty.getCounter();
+
+		// Silly test of different baud rate for some strings
+		// Needs fix for issue2 to work
 		//if ((counter % 10) ==0 ){
 			//rtty.setBaud(50);
 		//} else {
 			//rtty.setBaud(300);
 		//}
 
+		// Format time into a useful format
 		char time[9];
-		time_t unixtime=location.getUnixTime();
-		
 		struct tm *timein;
+		time_t unixtime=location.getUnixTime();
 		timein=gmtime(&unixtime);
-
 		strftime(time,9,"%H:%M:%S",timein);
-		snprintf(tosend,99,"$$$$SANDALS,%s,%li,%f,%f,%f",time, counter, location.getLatitude(), location.getLongitude(), location.getAltitude());
+
+		// Setup flags
+		int flags=0;
+		if (location.getFix()){
+			flags+=0x01;
+		}
+
+		// CALL, Counter,Time, Lat, Long, Alt, Sats, Flags, CSUM
+		snprintf(tosend,99,"$$$$SANDALS,%li,%s,%f,%f,%f,%d,%02X",
+			counter,
+			time,
+			location.getLatitude(),
+			location.getLongitude(),
+			location.getAltitude(),
+			location.getSats(),
+			flags
+		);
 		//printf("Main: Sending %s\n", tosend);
 		rtty.sendString(tosend);
 
