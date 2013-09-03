@@ -11,7 +11,6 @@
 #include <fcntl.h>
 #include <syslog.h>
 #include <pthread.h>
-#include <malloc.h>
 #include <string>
 #include <cstring>
 #include <cstdlib>

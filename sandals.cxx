@@ -1,4 +1,4 @@
-#include <malloc.h>
+#include <cstdlib>
 #include <pthread.h>
 #include <signal.h>
 #include <stdio.h>
