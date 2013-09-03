@@ -38,8 +38,8 @@ void GPSPosition::setTime(char *time){
 }
 
 void GPSPosition::setLatitude(float lat){
-		latitude=lat;
-		//syslog(LOG_INFO,"GPSPosition: Latitude %f",lat);
+	latitude=lat;
+	//syslog(LOG_INFO,"GPSPosition: Latitude %f",lat);
 }
 void GPSPosition::setLatitude(char *lat, char *ind){
 	float result=0;
