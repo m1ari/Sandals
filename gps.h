@@ -20,8 +20,8 @@ class GPS {
 	public:
 		GPS();
 		~GPS();
-		GPSPosition GetPosition();		// Report back current position
-		void Setup();		// Configure the GPS port and start getting data
+		GPSPosition GetPosition();	// Report back current position
+		void Setup();			// Configure the GPS port and start getting data
 		void Run();			// Run as a seperate thread to get data from the GPS
 		void Stop();			// Exit the run loop
 
