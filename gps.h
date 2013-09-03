@@ -2,6 +2,7 @@
 #define GPS_H_
 
 #include "gpsPosition.h"
+#include <string>
 
 class GPS {
 	private:
@@ -24,6 +25,12 @@ class GPS {
 		void Setup();		// Configure the GPS port and start getting data
 		void Run();			// Run as a seperate thread to get data from the GPS
 		void Stop();			// Exit the run loop
+
+		void setDevice(string d);
+		void setBaud(int b);
+		void setBits(int b);
+		void setStopBits(int b);
+		void setParity(char p);
 
 };
 
