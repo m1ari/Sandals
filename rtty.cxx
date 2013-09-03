@@ -54,7 +54,7 @@ RTTY::~RTTY(){
 void RTTY::Stop(){
 	syslog(LOG_NOTICE,"RTTY: Stopping Thread");
 	rtty_run=false;
-   pthread_join(threadid,NULL);
+	pthread_join(threadid,NULL);
 
 	// Disable Radio
 	GPIO_CLR = 1<<enPin;
@@ -247,7 +247,7 @@ void RTTY::setBaud(int in){
 
 void RTTY::setBits(int in){
 	bits=in;
-	syslog(LOG_NOTICE,"RTTY: Set Bits to %d",stopbits); 
+	syslog(LOG_NOTICE,"RTTY: Set Bits to %d",bits); 
 }
 
 void RTTY::setStopBits(int in){
