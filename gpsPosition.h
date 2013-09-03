@@ -24,7 +24,9 @@ class GPSPosition {
 		void setAltitude(float alt);
 		void setAltitude(char *alt, char* unit);
 		void setSats(int sats);
-		void setFix(int fix);
+		void setSats(char *sats);	// null terminated String as taken from GPGGA
+		void setFix(bool fix);
+		void setFix(char *f);		// null terminated String as taken from GPGGA
 		void clearAll();
 		void setUnixTime(char *date, char *time);
 		void setSpeed(char *speed);
@@ -32,6 +34,8 @@ class GPSPosition {
 		float getLatitude();
 		float getLongitude();
 		float getAltitude();
+		int getSats();
+		bool getFix();
 		time_t getUnixTime();
 		time_t getTime();
 		struct tm *getTime(struct tm *time);
