@@ -4,6 +4,22 @@ This is an attempt at bit banging a GPIO Pin to generate RTTY rather than sharin
 
 No warranty of the fitness of this code for any purpose is given, As it's directly accessing the memory used for the GPIO interface it could cause kernel panics (or worse), backup and backup often. You have been warned!
 
+Standard sentence looks like
+$$$SANDALS,counter,time,latitude,longitude,altitude,sats,flags*checksum
+
+flags are powers of 2
+2^0	 1	GPS Lock
+2^1	 2	Undefined
+2^2	 4	Undefined
+2^3	 8	Undefined
+
+2^4	1	Undefined
+2^5	2	Undefined
+2^6	4	Undefined
+2^7	8	Undefined
+
+
+
 
 
 Features To Add
