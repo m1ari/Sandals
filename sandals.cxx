@@ -76,8 +76,9 @@ int main (int argc, char **argv){
 			flags+=0x01;
 		}
 
-		// CALL, Counter,Time, Lat, Long, Alt, Sats, Flags, CSUM
-		snprintf(tosend,99,"$$$$SANDALS,%li,%s,%f,%f,%f,%d,%02X",
+		// Generate telemetry string to send
+		// CALL, Counter,Time, Lat, Long, Alt, Sats, Flags, CSUM (Added in rtty module)
+		snprintf(tosend,99,"$$$$SANDALS,%li,%s,%f,%f,%.2f,%d,%#04x",
 			counter,
 			time,
 			location.getLatitude(),
@@ -86,16 +87,17 @@ int main (int argc, char **argv){
 			location.getSats(),
 			flags
 		);
-		//printf("Main: Sending %s\n", tosend);
+		// Update the next string to send
 		rtty.sendString(tosend);
 
+		// Check the queue size and add new if needed (SSDV)
 		if (rtty.getQueueSize() <4){
 			for (int i=0; i<10; i++){
 				sprintf(queuestr, "Queue Value %d at %s", queue++, time);
-				rtty.queueString(queuestr);
+				//rtty.queueString(queuestr);
 			}
 		}
-		sleep(1);
+		sleep(3);
 	}
 
 	gps.Stop();

@@ -199,7 +199,7 @@ void RTTY::rttyThread(){
 		if (datasent == false) {
 			// If nothing was sent send some data.
 			unsigned int i;
-			char send[]="Error: No Data to Send\n";
+			char send[]="zzzzzzzzz";
 			syslog(LOG_NOTICE,"RTTY: Sending String %s",send);
 
 			for (i=0; i<strlen(send); i++){
