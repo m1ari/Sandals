@@ -12,9 +12,6 @@
 using namespace std;
 
 void sig_handler(int sig);
-// Todo
-// GPS Thread
-// Transfer data between threads - mutexes ?
 
 volatile bool systemloop=true;
 

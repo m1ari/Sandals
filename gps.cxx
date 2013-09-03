@@ -35,16 +35,17 @@ GPSPosition GPS::GetPosition(){
 void GPS::Setup(){
 	syslog(LOG_NOTICE,"GPS: Setup");
 
-	uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);		//Open in non blocking read/write mode
+	//Open in non blocking read/write mode
+	uart0_filestream = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY | O_NDELAY);
 	if (uart0_filestream == -1) {
 		syslog(LOG_ERR,"GPS: Unable to open UART.");
 	}
 
 	struct termios options;
 	tcgetattr(uart0_filestream, &options);
-	//options.c_cflag = B4800 | CS8 | CLOCAL | CREAD;		//<Set baud rate
+	//options.c_cflag = B4800 | CS8 | CLOCAL | CREAD	//<Set baud rate
 	options.c_cflag = B9600 | CS8 | CLOCAL | CREAD;		//<Set baud rate
-	options.c_iflag = IGNPAR | IGNCR; 	//ICRNL;
+	options.c_iflag = IGNPAR | IGNCR; 			//ICRNL;
 	options.c_oflag = 0;
 	options.c_lflag = 0;
 	tcflush(uart0_filestream, TCIFLUSH);
@@ -61,9 +62,7 @@ void GPS::Stop(){
 }
 
 void GPS::Run(){
-	//parserThread();
 	pthread_create(&threadid,NULL,&GPS::entryPoint,this);
-		// (void*)this
 }
 void* GPS::entryPoint(void *pthis){
 	GPS *self= (GPS*)pthis;
