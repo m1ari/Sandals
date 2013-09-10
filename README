@@ -27,13 +27,36 @@ Features To Add
  * GPS
    * Track number of seen sats (and which ones)
    * UBlox specific features in GPS Class
+   * Sentences to Add
+     * $GPGSA - Lists satellites used and DOP
+     * GPGSV - Satellites in View
+
  * Images
    * Grab Images from Pi CAM
    * SSDV
    * Add Location EXIF Data to images
  * APRS
    * PWM on GPIO, or Soundard
- * DominoEX
+ * DominoEX16
+   * Small shifts needed
+   * 18 tones with 355Hz BW
+   * Tones increase by the value in the lookup table + 2 * baud, if new tone >18 remove 18 from the value
+   * Baud for DomEx16 is 15.625 (0.0078125V per tone)
+   * Tone spacing matches Baud rate - 0.0078125V per tone for NTX2 (2000Hz/V)
+
+
+Logic High is 3v3
+
+ Over 1s
+ -> 1V needs on 1/3.3 of the time
+ .1v needs on 1/33 of the time
+
+ Per tone 0.00236742424242424242424242424242V
+ Need to go high once every 422.4 Cycles
+
+
+   * Run at multiple of 6600Hz (allows Baud * minimum PWN Rate Required)
+
 
 
 Possible future changes
