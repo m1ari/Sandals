@@ -217,7 +217,7 @@ void RTTY::txbit(int bit){
 	} else {
 		GPIO_CLR = 1<<dataPin;
 	}
-	usleep(baud_delay);
+	usleep(baud_delay);	// Resolution is around 100uS This should be fine up to around 1200 baud. Above that we might have issues
 }
 
 void RTTY::txbyte(char byte){
