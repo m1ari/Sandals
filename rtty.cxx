@@ -290,6 +290,7 @@ void RTTY::sendString(char *send){
 
 
 void RTTY::queueString(char *send){
+	// TODO: This is probably broken for SSDV as it needs to transmit NULLS as well as other characters
 	int size=0;
 
 	size=strlen(send);
