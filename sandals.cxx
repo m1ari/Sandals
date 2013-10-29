@@ -13,7 +13,8 @@ using namespace std;
 
 void sig_handler(int sig);
 
-volatile bool systemloop=true;
+//volatile bool systemloop=true;
+volatile sig_atomic_t systemloop=true;
 
 int main (int argc, char **argv){
 	openlog("HabTrack", LOG_CONS, LOG_LOCAL3);
@@ -78,7 +79,8 @@ int main (int argc, char **argv){
 
 		// Generate telemetry string to send
 		// CALL, Counter,Time, Lat, Long, Alt, Sats, Flags, CSUM (Added in rtty module)
-		snprintf(tosend,99,"$$$$SANDALS,%li,%s,%f,%f,%.2f,%d,%#04x",
+		//snprintf(tosend,99,"$$$$SANDALS,%li,%s,%f,%f,%.2f,%d,%#04x",
+		snprintf(tosend,99,"$$$$SLADNAS,%li,%s,%f,%f,%.2f,%d,%#04x",
 			counter,
 			time,
 			location.getLatitude(),
