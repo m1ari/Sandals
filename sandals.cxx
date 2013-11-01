@@ -29,21 +29,29 @@ int main (int argc, char **argv){
 	signal(SIGINT,sig_handler);
 	signal(SIGKILL,sig_handler);
 
-	long int counter=0;
+	long int counter1,counter2;
 
 	GPS gps;
 	GPSPosition location;
-	RTTY rtty;
+	RTTY ntx2, ntx2b;
+	//RTTY rtty;
 
 	gps.Setup();
 	gps.Run();
 
-	rtty.setBaud(300);
-	rtty.setBits(8);
-	rtty.setStopBits(2);
-	rtty.setEnablePin(23);
-	rtty.setDataPin(18);
-	rtty.Run();
+	ntx2.setBaud(300);
+	ntx2.setBits(8);
+	ntx2.setStopBits(2);
+	ntx2.setEnablePin(25);
+	ntx2.setDataPin(24);
+	ntx2.Run();
+
+	ntx2b.setBaud(600);
+	ntx2b.setBits(7);
+	ntx2b.setStopBits(2);
+	ntx2b.setEnablePin(23);
+	ntx2b.setDataPin(18);
+	ntx2b.Run();
 	//char tosend[100];
 	char *tosend;
 	tosend=(char*) malloc(sizeof(char) * 100);
@@ -54,7 +62,8 @@ int main (int argc, char **argv){
 	while (systemloop){
 		// Get information from our threaded classes
 		location=gps.GetPosition();
-		counter=rtty.getCounter();
+		counter1=ntx2.getCounter();
+		counter2=ntx2b.getCounter();
 
 		// Silly test of different baud rate for some strings
 		// Needs fix for issue2 to work
@@ -80,8 +89,18 @@ int main (int argc, char **argv){
 		// Generate telemetry string to send
 		// CALL, Counter,Time, Lat, Long, Alt, Sats, Flags, CSUM (Added in rtty module)
 		//snprintf(tosend,99,"$$$$SANDALS,%li,%s,%f,%f,%.2f,%d,%#04x",
-		snprintf(tosend,99,"$$$$SLADNAS,%li,%s,%f,%f,%.2f,%d,%#04x",
-			counter,
+		snprintf(tosend,99,"$$$$SLADNAS1,%li,%s,%f,%f,%.2f,%d,%#04x",
+			counter1,
+			time,
+			location.getLatitude(),
+			location.getLongitude(),
+			location.getAltitude(),
+			location.getSats(),
+			flags
+		);
+		ntx2.sendString(tosend);
+		snprintf(tosend,99,"$$$$SLADNAS2,%li,%s,%f,%f,%.2f,%d,%#04x",
+			counter2,
 			time,
 			location.getLatitude(),
 			location.getLongitude(),
@@ -90,20 +109,23 @@ int main (int argc, char **argv){
 			flags
 		);
 		// Update the next string to send
-		rtty.sendString(tosend);
+		ntx2b.sendString(tosend);
 
 		// Check the queue size and add new if needed (SSDV)
+/*
 		if (rtty.getQueueSize() <4){
 			for (int i=0; i<10; i++){
 				sprintf(queuestr, "Queue Value %d at %s", queue++, time);
 				//rtty.queueString(queuestr);
 			}
 		}
-		sleep(3);
+*/
+		sleep(1);
 	}
 
 	gps.Stop();
-	rtty.Stop();
+	ntx2.Stop();
+	ntx2b.Stop();
 	return(0);
 }
 
