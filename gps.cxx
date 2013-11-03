@@ -54,8 +54,6 @@ void GPS::Setup(){
 void GPS::Stop(){
 	syslog(LOG_NOTICE,"GPS: Stopping Thread");
 	gps_run=false;
-	// Wait for thread to stop
-	// pthread_join ??
 	pthread_join(threadid,NULL);
 	syslog(LOG_NOTICE,"GPS: Thread Stopped");
 }
