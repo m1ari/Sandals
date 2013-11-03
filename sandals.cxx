@@ -5,6 +5,7 @@
 #include <syslog.h>
 #include <time.h>
 #include <unistd.h>
+#include "sandals.h"
 #include "gps.h"
 #include "gpsPosition.h"
 #include "rtty.h"
@@ -39,14 +40,14 @@ int main (int argc, char **argv){
 	gps.Setup();
 	gps.Run();
 
-	ntx2.setBaud(300);
-	ntx2.setBits(8);
+	ntx2.setBaud(50);
+	ntx2.setBits(7);
 	ntx2.setStopBits(2);
 	ntx2.setEnablePin(25);
 	ntx2.setDataPin(24);
 	ntx2.Run();
 
-	ntx2b.setBaud(600);
+	ntx2b.setBaud(300);
 	ntx2b.setBits(7);
 	ntx2b.setStopBits(2);
 	ntx2b.setEnablePin(23);
@@ -62,8 +63,6 @@ int main (int argc, char **argv){
 	while (systemloop){
 		// Get information from our threaded classes
 		location=gps.GetPosition();
-		counter1=ntx2.getCounter();
-		counter2=ntx2b.getCounter();
 
 		// Silly test of different baud rate for some strings
 		// Needs fix for issue2 to work
@@ -88,8 +87,11 @@ int main (int argc, char **argv){
 
 		// Generate telemetry string to send
 		// CALL, Counter,Time, Lat, Long, Alt, Sats, Flags, CSUM (Added in rtty module)
-		//snprintf(tosend,99,"$$$$SANDALS,%li,%s,%f,%f,%.2f,%d,%#04x",
-		snprintf(tosend,99,"$$$$SLADNAS1,%li,%s,%f,%f,%.2f,%d,%#04x",
+
+		// Data String for Radio1
+		counter1=ntx2.getCounter();
+		snprintf(tosend,99,"$$$$%s,%li,%s,%f,%f,%.2f,%d,%#04x",
+			callsign,
 			counter1,
 			time,
 			location.getLatitude(),
@@ -99,7 +101,11 @@ int main (int argc, char **argv){
 			flags
 		);
 		ntx2.sendString(tosend);
-		snprintf(tosend,99,"$$$$SLADNAS2,%li,%s,%f,%f,%.2f,%d,%#04x",
+
+		// Data String for Radio2
+		counter2=ntx2b.getCounter();
+		snprintf(tosend,99,"$$$$%s2,%li,%s,%f,%f,%.2f,%d,%#04x",
+			callsign,
 			counter2,
 			time,
 			location.getLatitude(),
@@ -108,8 +114,8 @@ int main (int argc, char **argv){
 			location.getSats(),
 			flags
 		);
-		// Update the next string to send
 		ntx2b.sendString(tosend);
+
 
 		// Check the queue size and add new if needed (SSDV)
 /*
