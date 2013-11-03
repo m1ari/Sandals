@@ -4,7 +4,6 @@
 #include <termios.h>
 #include <syslog.h>
 #include <pthread.h>
-#include <malloc.h>
 #include <cstring>
 #include <cstdlib>
 
@@ -177,7 +176,7 @@ void GPS::nmeaGPRMC(char *nmea){
 		strcpy(tempmsg,nmea);
 		char *token=strsep(&tempmsg,",*");
 		if (token != NULL){
-			if (strcmp(token,"$GPRMC")==0){	// Test we really have a GPGGA string
+			if (strcmp(token,"$GPRMC")==0){	// Test we really have a GPRMC string
 				//syslog(LOG_INFO,"GPS(nmeaGPRMC): Decoding GPRMC String: %s",nmea);
 				int state=0;
 				char *gps_time=NULL;
@@ -218,13 +217,13 @@ void GPS::nmeaGPRMC(char *nmea){
 				}
 				free(ptempmsg);
 			} else {
-				syslog(LOG_ERR,"GPS(nmeaGPGGA): Not a valid string %s",nmea);
+				syslog(LOG_ERR,"GPS(nmeaGPRMC): Not a valid string %s",nmea);
 			}
 		} else {
-			syslog(LOG_ERR,"GPS(nmeaGPGGA): Couldn't get token: %s",nmea);
+			syslog(LOG_ERR,"GPS(nmeaGPRMC): Couldn't get token: %s",nmea);
 		}
 	} else {
-		syslog(LOG_ERR,"GPS(nmeaGPGGA): Couldn't aloocate memory to parse the string");
+		syslog(LOG_ERR,"GPS(nmeaGPRMC): Couldn't aloocate memory to parse the string");
 	}
 
 }
@@ -257,8 +256,13 @@ void GPS::nmeaGPGGA(char *nmea){
 						case 5:	// Longitude E/W Indicator
 							Position.setLongitude(pos,token);
 						break;
-						// case 6:	// Lock
-						// case 7:	// Sats
+						case 6:	// Lock
+							Position.setFix(token);
+						break;
+						case 7:	// Sats
+							Position.setSats(token);
+							// 07
+						break;
 						// case 8:	// Horizontal dilution of Precision
 						case 9:	// Altitude
 							strncpy(pos,token,sizeof(pos));

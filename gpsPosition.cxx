@@ -4,7 +4,6 @@
 #include <termios.h>
 #include <syslog.h>
 #include <pthread.h>
-#include <malloc.h>
 #include <cstring>
 #include <cstdlib>
 #include <time.h>
@@ -101,9 +100,26 @@ void GPSPosition::setAltitude(char *alt, char *unit){
 	}
 	setAltitude(result);
 }
-void GPSPosition::setSats(int sats){
+void GPSPosition::setSats(int s){
+	sats=s;
 }
-void GPSPosition::setFix(int fix){
+void GPSPosition::setSats(char* s){
+	int i=0;
+	i=atoi(s);
+	setSats(i);
+}
+void GPSPosition::setFix(bool f){
+	gotfix=f;
+}
+void GPSPosition::setFix(char* f){
+	if (f[0]=='0'){
+		setFix(false);
+	} else if ((f[0]=='1') || (f[0]='2')){
+		setFix(true);
+	} else {
+		syslog(LOG_ERR,"GPS: GPGGA Invalid fix value %s",f);
+		setFix(false);
+	}
 }
 void GPSPosition::setUnixTime(char *date, char *time){
 	//Date DDMMYY
@@ -143,6 +159,12 @@ float GPSPosition::getLongitude(){
 }
 float GPSPosition::getAltitude(){
 	return altitude; 
+}
+int GPSPosition::getSats(){
+	return sats; 
+}
+bool GPSPosition::getFix(){
+	return gotfix;
 }
 time_t GPSPosition::getUnixTime(){
 	return unixtime;

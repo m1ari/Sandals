@@ -11,7 +11,6 @@
 #include <fcntl.h>
 #include <syslog.h>
 #include <pthread.h>
-#include <malloc.h>
 #include <string>
 #include <cstring>
 #include <cstdlib>
@@ -54,7 +53,7 @@ RTTY::~RTTY(){
 void RTTY::Stop(){
 	syslog(LOG_NOTICE,"RTTY: Stopping Thread");
 	rtty_run=false;
-   pthread_join(threadid,NULL);
+	pthread_join(threadid,NULL);
 
 	// Disable Radio
 	GPIO_CLR = 1<<enPin;
@@ -200,7 +199,7 @@ void RTTY::rttyThread(){
 		if (datasent == false) {
 			// If nothing was sent send some data.
 			unsigned int i;
-			char send[]="Error: No Data to Send\n";
+			char send[]="zzzzzzzzz";
 			syslog(LOG_NOTICE,"RTTY: Sending String %s",send);
 
 			for (i=0; i<strlen(send); i++){
@@ -218,7 +217,7 @@ void RTTY::txbit(int bit){
 	} else {
 		GPIO_CLR = 1<<dataPin;
 	}
-	usleep(baud_delay);
+	usleep(baud_delay);	// Resolution is around 100uS This should be fine up to around 1200 baud. Above that we might have issues
 }
 
 void RTTY::txbyte(char byte){
@@ -247,7 +246,7 @@ void RTTY::setBaud(int in){
 
 void RTTY::setBits(int in){
 	bits=in;
-	syslog(LOG_NOTICE,"RTTY: Set Bits to %d",stopbits); 
+	syslog(LOG_NOTICE,"RTTY: Set Bits to %d",bits); 
 }
 
 void RTTY::setStopBits(int in){
@@ -291,6 +290,7 @@ void RTTY::sendString(char *send){
 
 
 void RTTY::queueString(char *send){
+	// TODO: This is probably broken for SSDV as it needs to transmit NULLS as well as other characters
 	int size=0;
 
 	size=strlen(send);

@@ -1,2 +1,5 @@
 *.o
 sandals
+tests/camledoff
+tests/dom16
+tests/dom16_2
