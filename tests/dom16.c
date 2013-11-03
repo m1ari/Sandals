@@ -50,7 +50,7 @@ void domex_tone(int tone){
 			} else {
 				GPIO_CLR = 1<<18;
 			}
-			udelay(2);
+			udelay(1);
 		}
 	//}
 }
