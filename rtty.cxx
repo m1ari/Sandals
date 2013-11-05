@@ -139,6 +139,9 @@ void RTTY::rttyThread(){
 
 	pthread_getschedparam(this_thread,&policy, &params);
 	printf("Policy: %d, Current Pri %d (Min: %d, Max: %d)\n",policy,params.sched_priority,sched_get_priority_min(SCHED_FIFO),sched_get_priority_max(SCHED_FIFO));
+	// Add mlock / mlockall to prevernt swapping
+	// http://www.airspayce.com/mikem/bcm2835/
+	// https://rt.wiki.kernel.org/index.php/Threaded_RT-application_with_memory_locking_and_stack_handling_example
 
 	while (rtty_run){
 		bool datasent=false;
