@@ -69,8 +69,8 @@ void domex_tone(int tone){
 	// PWM
 	// Set tone
 	// delayMicroseconds(64000);
-	*(pwm + PWM0_DATA) = tone;
-	delayMicroseconds(42240); // Ideally we need to delay for ~1.5 uS - Not easily possible though :(
+	*(pwm + PWM0_DATA) = tone+100;
+	delayMicroseconds(64000); // 64mS per tone for 15.625 baud
 }
 
 void domex_nibble(int nibble){
@@ -123,7 +123,7 @@ void SetupPWM(){
 
 // setRange (1024)
 	// filled with 0 for 20 milliseconds = 320 bits
-	*(pwm + PWM0_RANGE) = 320;	// 1024 in WiringPi
+	*(pwm + PWM0_RANGE) = 384;	// 1024 in WiringPi
 	delayMicroseconds(10);
 
 //setClock(32)	- 19.2 /32 = 600khz
@@ -145,7 +145,7 @@ void SetupPWM(){
 	// DIVI is the integer part of the divisor
 	// the fractional part (DIVF) drops clock cycles to get the output frequency, bad for servo motors
 	// 320 bits for one cycle of 20 milliseconds = 62.5 us per bit = 16 kHz
-	int idiv = 32;	//(int) (19200000.0f / 16000.0f);
+	int idiv = 5;	//(int) (19200000.0f / 16000.0f);
 	if (idiv < 1 || idiv > 0x1000) {
 		printf("idiv out of range: %x\n", idiv);
 		exit(-1);
