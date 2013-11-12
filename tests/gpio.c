@@ -7,13 +7,20 @@
  *   http://git.drogon.net/?p=wiringPi;a=blob;f=wiringPi/wiringPi.c
 */
 
-// Access from ARM Running Linux
+/* Addresses from:
+ * 1) http://git.drogon.net/?p=wiringPi;a=blob;f=wiringPi/wiringPi.c
+ * 2) http://www.raspberrypi.org/phpBB3/viewtopic.php?f=91&t=23698&p=220553
+*/
 #define BCM2708_PERI_BASE			     0x20000000
-#define GPIO_BASE		(BCM2708_PERI_BASE + 0x00200000)	/* GPIO Controller */
-#define GPIO_PWM		(BCM2708_PERI_BASE + 0x0020C000)	/* PWM Controller */
-#define CLOCK_BASE		(BCM2708_PERI_BASE + 0x00101000)
-#define GPIO_PADS		(BCM2708_PERI_BASE + 0x00100000)
-#define GPIO_TIMER		(BCM2708_PERI_BASE + 0x0000B000)
+#define GPIO_BASE		(BCM2708_PERI_BASE + 0x00200000)	// 1,2	/* GPIO Controller */
+#define GPIO_PWM		(BCM2708_PERI_BASE + 0x0020C000)	// 1,2	/* PWM Controller */
+#define CLOCK_BASE		(BCM2708_PERI_BASE + 0x00101000)	// 1,2
+#define GPIO_PADS		(BCM2708_PERI_BASE + 0x00100000)	// 1
+#define GPIO_TIMER		(BCM2708_PERI_BASE + 0x0000B000)	// 1
+
+//#define SYST_BASE		(BCM2708_PERI_BASE + 0x00003000)	// 2
+//#define DMA_BASE		(BCM2708_PERI_BASE + 0x00007000)	// 2
+//#define DMA15_BASE		(BCM2708_PERI_BASE + 0x00E05000)	// 2
 
 #include <stdio.h>
 #include <stdint.h>
