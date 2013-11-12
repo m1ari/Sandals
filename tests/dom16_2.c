@@ -203,7 +203,7 @@ int main(int argc, char **argv) {
 
 	int i;
 	//for (i=0; i<strlen(send); i++){
-	for (i=0; i<=20; i++){
+	for (i=0; i<=60; i++){
 		domex_txbyte('a');	// Currently this is Hard coded to send Aa
 	}
 
