@@ -9,6 +9,7 @@
 #include "gps.h"
 #include "gpsPosition.h"
 #include "rtty.h"
+#include "dominoex.h"
 
 using namespace std;
 
@@ -34,7 +35,8 @@ int main (int argc, char **argv){
 
 	GPS gps;
 	GPSPosition location;
-	RTTY ntx2, ntx2b;
+	RTTY ntx2;
+	DominoEX ntx2b;
 	//RTTY rtty;
 
 	gps.Setup();
@@ -47,9 +49,7 @@ int main (int argc, char **argv){
 	ntx2.setDataPin(24);
 	ntx2.Run();
 
-	ntx2b.setBaud(300);
-	ntx2b.setBits(7);
-	ntx2b.setStopBits(2);
+	//ntx2b.setBaud(300);	// Not currently used for DominoEX
 	ntx2b.setEnablePin(23);
 	ntx2b.setDataPin(18);
 	ntx2b.Run();
@@ -91,7 +91,7 @@ int main (int argc, char **argv){
 		// Data String for Radio1
 		counter1=ntx2.getCounter();
 		snprintf(tosend,99,"$$$$%s,%li,%s,%f,%f,%.2f,%d,%#04x",
-			callsign,
+			callsign1,
 			counter1,
 			time,
 			location.getLatitude(),
@@ -104,8 +104,8 @@ int main (int argc, char **argv){
 
 		// Data String for Radio2
 		counter2=ntx2b.getCounter();
-		snprintf(tosend,99,"$$$$%s2,%li,%s,%f,%f,%.2f,%d,%#04x",
-			callsign,
+		snprintf(tosend,99,"$$$$%s,%li,%s,%f,%f,%.2f,%d,%#04x",
+			callsign2,
 			counter2,
 			time,
 			location.getLatitude(),
@@ -126,7 +126,7 @@ int main (int argc, char **argv){
 			}
 		}
 */
-		sleep(1);
+		sleep(2);
 	}
 
 	gps.Stop();

@@ -110,6 +110,12 @@ void delayMicroseconds (unsigned int howLong) {
 void SetupPWM(){
 	uint32_t pwm_control;
 
+	// Should pass these in from the calling function - but lets make life easy for now
+	volatile unsigned *pwm;
+	volatile unsigned *clk;
+	pwm = mapRegisterMemory(GPIO_PWM);
+	clk = mapRegisterMemory(CLOCK_BASE);
+
 //SetMode (Balanced)
 	// start PWM0
 	*(pwm + PWM_CONTROL) = PWM0_ENABLE;			// Balanced mode
