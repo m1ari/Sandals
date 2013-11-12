@@ -27,12 +27,8 @@ class RTTY {
 		bool rtty_run;
 		static void* entryPoint(void *pthis);
 		void rttyThread();
-		void setup_io();
 
-		int  mem_fd;
-		void *gpio_map;
-		// I/O access
-		volatile unsigned *gpio;
+		volatile unsigned *gpio;	// Memory access for GPIO
 
 	public:
 		RTTY();
