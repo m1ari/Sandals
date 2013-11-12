@@ -1,36 +1,15 @@
-// Code based on example from 
-// http://elinux.org/RPi_Low-level_peripherals#C_2
-
-// Switching of 20MHz should be acheiveable based on the tests at
-// Based on http://codeandlife.com/2012/07/03/benchmarking-raspberry-pi-gpio-speed/
-
-// Access from ARM Running Linux
-
 #include <cstdio>
 #include <unistd.h>
-#include <fcntl.h>
 #include <syslog.h>
 #include <pthread.h>
 #include <string>
 #include <cstring>
 #include <cstdlib>
-#include <sys/mman.h>
 #include <sched.h>
 #include "rtty.h"
+#include "gpio.h"
 
 using namespace std;
-
-#define BCM2708_PERI_BASE        0x20000000
-#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
-#define PAGE_SIZE (4*1024)
-#define BLOCK_SIZE (4*1024)
-
-// GPIO setup macros. Always use INP_GPIO(x) before using OUT_GPIO(x) or SET_GPIO_ALT(x,y)
-#define INP_GPIO(g) *(gpio+((g)/10)) &= ~(7<<(((g)%10)*3))
-#define OUT_GPIO(g) *(gpio+((g)/10)) |=  (1<<(((g)%10)*3))
-#define SET_GPIO_ALT(g,a) *(gpio+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
-#define GPIO_SET *(gpio+7)  // sets   bits which are 1 ignores bits which are 0
-#define GPIO_CLR *(gpio+10) // clears bits which are 1 ignores bits which are 0
 
 RTTY::RTTY(){
 	pthread_mutex_init(&m_nextString,NULL);
@@ -64,7 +43,8 @@ void RTTY::Run(){
 	syslog(LOG_NOTICE,"RTTY: Creating Thread");
 	
 	// Configure GPIO Stuff
-	setup_io();
+        gpio = mapRegisterMemory(GPIO_BASE);
+
 	// Check it's not already running
 	rtty_run=true;
 
@@ -307,34 +287,4 @@ int RTTY::getQueueSize(){
 }
 int RTTY::getCounter(){
 	return counter;
-}
-
-//
-// Set up a memory regions to access GPIO
-//
-void RTTY::setup_io() {
-	/* open /dev/mem */
-	if ((mem_fd = open("/dev/mem", O_RDWR|O_SYNC) ) < 0) {
-		printf("can't open /dev/mem \n");
-		exit(-1);
-	}
-
-	/* mmap GPIO */
-	gpio_map = mmap(
-		NULL,			//Any adddress in our space will do
-		BLOCK_SIZE,		//Map length
-		PROT_READ|PROT_WRITE,	// Enable reading & writting to mapped memory
-		MAP_SHARED,		//Shared with other processes
-		mem_fd,			//File to map
-		GPIO_BASE		//Offset to GPIO peripheral
-	);
-
-	close(mem_fd); //No need to keep mem_fd open after mmap
-
-	if (gpio_map == MAP_FAILED) {
-		printf("mmap error %d\n", (int)gpio_map);	//errno also set!
-		exit(-1);
-	}
-	// Always use volatile pointer!
-	gpio = (volatile unsigned *)gpio_map;
 }
