@@ -1,7 +1,7 @@
-Pi Based Tracker written in multithreaded C++
-=============================================
+Pi Based Tracker 
+================
 
-This is a High Altitude Balloon payload tracker written in C++ designed to run on a Raspberry Pi. This version uses radio modules connected to the GPIO pins to generate the signal leaving the UART free to talk to the GPS module (currently all RPi payloads have shared the UART with the GPS and single radio module).
+This is a High Altitude Balloon payload tracker written in multithreaded C++ designed to run on a Raspberry Pi. This version uses radio modules connected to the GPIO pins to generate the signal leaving the UART free to talk to the GPS module (currently all RPi payloads have shared the UART with the GPS and single radio module).
 
 The code has been succesfully tested on the ground running two RTTY modules at 600 baud or a single RTTY module and single DominoEX module (NB: using the gpio header it's only possible to use a single DominoEX radio as this requires PWM).
 
@@ -12,20 +12,24 @@ GPS Class
 This connects to the GPS device and parses incomming NMEA sentences. The Process runs as a seperate thread and makes the GPS data available via the GPSPosition class.
 
 Features To Add
-* [ ] Configuration of GPS via class interface
-* [ ] Set System Date and Time if not already set
-* [ ] GPS
- * [ ] Track number of seen sats (and which ones)
- * [ ] UBlox specific features in GPS Class
- * [ ] Sentences to Add
-  * [ ] $GPGSA - Lists satellites used and DOP
-  * [ ] GPGSV - Satellites in View
-
+* Configuration of GPS via class interface
+* Set System Date and Time if not already set
+* GPS
+  * Track number of seen sats (and which ones)
+  * UBlox specific features in GPS Class
+  * Sentences to Add
+    * $GPGSA - Lists satellites used and DOP
+    * GPGSV - Satellites in View
 
 RTTY Class
 ----------
+This class creates a new thread that will enable and NTX2 / NTX2B radio and send RTTY, Connecting up the NTX2 is done in a similar way to the [UKHAS Arduino Guide][1]
 
+With this class it's possible to set the baud rate, stop bits and start bits. You should also define the which gpio pins are used for the enable line and data line before starting the class.
 
+You can feed two types of string into the class. The next string will overwrite the existing pending string to be sent, this is ideal for telemetry data and means the thread will always send the latest data it's been given. There's also a queue string method which will queue up data to be sent. This is designed for SSDV packets and will send the queued strings in between telemetry stings.
+
+This class run's with a higher priority as it relies on reasonably accurate timing.
 
 DominoEX Class
 --------------
@@ -52,22 +56,20 @@ Logic High is 3v3 using a 10K resistor between the GPIO pin and NTX2B makes this
 Sentence Structure
 ------------------
 
-
-
-
 Standard sentence looks like
 $$$SANDALS,counter,time,latitude,longitude,altitude,sats,flags*checksum
 
-flags are powers of 2
-2^0	 1	GPS Lock
-2^1	 2	Undefined
-2^2	 4	Undefined
-2^3	 8	Undefined
-
-2^4	1	Undefined
-2^5	2	Undefined
-2^6	4	Undefined
-2^7	8	Undefined
+flags is made up by adding powers of 2:
+| Power2 | Hex     | Use       |
+| ------ | ------- | ----------|
+|2^0     | 0x01    | GPS Lock  |
+|2^1     | 0x02    | Undefined  
+|2^2     | 0x04    | Undefined |
+|2^3     | 0x08    | Undefined |
+|2^4     | 0x10    | Undefined |
+|2^5     | 0x20    | Undefined |
+|2^6     | 0x40    | Undefined |
+|2^7     | 0x80    | Undefined |
 
 
 
@@ -96,3 +98,7 @@ Typing changes
 
 RTTY (PWM or kernel module)
 	dma pwm http://pythonhosted.org/RPIO/pwm_py.html
+
+
+
+[1]: http://ukhas.org.uk/guides:linkingarduinotontx2
