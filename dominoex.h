@@ -9,7 +9,8 @@ class DominoEX {
 		char *currString;	// The string we're currently sending - updated with mutex
 		char *nextString;	// Next string to send (updated by external)
 		int baud;		// Baud rate to send data at
-		int baud_delay;		// time between bits for chosen baud rate
+		int baud_delay;		// Time between nibbles for DominoEX
+		int tone_rate;		// Tone spacing for DominoEX
 		int enPin;		// GPIO used for the NTX2 EN pin
 		int dataPin;		// GPIO used for the NTX2 TXD pin
 		int counter;		// Telemetry Counter

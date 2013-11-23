@@ -14,14 +14,13 @@ using namespace std;
 
 DominoEX::DominoEX(){
 	pthread_mutex_init(&m_nextString,NULL);
+	dominoex_run=false;
 	counter=0;
 	currString=NULL;
 	nextString=NULL;
-	baud=0;
-	baud_delay=0;
 	enPin=0;
 	dataPin=0;
-	dominoex_run=false;
+	setBaud(16);
 }
 
 DominoEX::~DominoEX(){
@@ -61,7 +60,7 @@ void DominoEX::Run(){
 		// Should check this is a pin that allows PWM
 		SET_GPIO_ALT(dataPin, 5);	// For PWM
 		delayMicroseconds(110);
-		SetupPWM();
+		SetupPWM();	// TODO Seperate out parts of the function - We need to be able to change Range on the fly
 		pthread_create(&threadid,NULL,&DominoEX::entryPoint,this);
 	} else {
 		if (enPin==0){
@@ -191,7 +190,8 @@ void DominoEX::txnibble(int nibble){
                 txtone-=18;
         }
 	*(pwm + PWM0_DATA) = txtone+100;
-	delayMicroseconds(64000); // 64mS per tone for 15.625 baud
+	//delayMicroseconds(64000); // 64mS per tone for 15.625 baud
+	delayMicroseconds(baud_delay);
 }
 
 void DominoEX::txbyte(char byte, int sec){
@@ -199,7 +199,7 @@ void DominoEX::txbyte(char byte, int sec){
 
 	nibble=varicode[byte + ((sec) ? 256 : 0)];
 
-	//Always send the first nibble
+	// Always send the first nibble
 	txnibble(nibble[0]);
 
 	// Only send the second nibble if it or the third nibble >0
@@ -213,22 +213,78 @@ void DominoEX::txbyte(char byte, int sec){
 	}
 }
 
+// setBaud doesn't currently affect the sent baudrate - Need to change the tx_ functions
 void DominoEX::setBaud(int in){
-	// Code currently fixed for DominoEX16, would be nice to calculate the values to allow other speeds
-	baud=in;
-	//baud_delay=(1000000/in)*0.975;
-	baud_delay=(1000000/in);
-	syslog(LOG_NOTICE,"DominoEX: Set Baud to %d (%duS)",baud,baud_delay); 
+	syslog(LOG_NOTICE,"DominoEX(setBaud): Set Baud to %d",in); 
+	if (dominoex_run==false){
+		switch (in){
+			case 4:
+				baud=in;
+				baud_delay=1000000/3.90625;
+				tone_rate=2;
+				// Set PWM Range
+				syslog(LOG_NOTICE,"DominoEX(setBaud): Set Baud to %d (%duS)",baud,baud_delay); 
+			break;
+			case 5:
+				baud=in;
+				baud_delay=1000000/5.3833;
+				tone_rate=2;
+				// Set PWM Range
+				syslog(LOG_NOTICE,"DominoEX(setBaud): Set Baud to %d (%duS)",baud,baud_delay); 
+			break;
+			case 8:
+				baud=in;
+				baud_delay=1000000/7.8125;
+				tone_rate=2;
+				// Set PWM Range
+				syslog(LOG_NOTICE,"DominoEX(setBaud): Set Baud to %d (%duS)",baud,baud_delay); 
+			break;
+			case 11:
+				baud=in;
+				baud_delay=1000000/10.766;
+				tone_rate=1;
+				// Set PWM Range
+				syslog(LOG_NOTICE,"DominoEX(setBaud): Set Baud to %d (%duS)",baud,baud_delay); 
+			break;
+			case 16:
+				baud=in;
+				baud_delay=1000000/15.625;
+				tone_rate=1;
+				// Set PWM Range
+				syslog(LOG_NOTICE,"DominoEX(setBaud): Set Baud to %d (%duS)",baud,baud_delay); 
+			break;
+			case 22:
+				baud=in;
+				baud_delay=1000000/21.533;
+				tone_rate=1;
+				// Set PWM Range
+				syslog(LOG_NOTICE,"DominoEX(setBaud): Set Baud to %d (%duS)",baud,baud_delay); 
+			break;
+			default:
+				syslog(LOG_ERR,"DominoEX(setBaud): Invalid Baud rate %d",in); 
+			break;
+		}
+	} else {
+		syslog(LOG_ERR,"DominoEX(setBaud): Module must be stopped before changing baud rate"); 
+	}
 }
 
 void DominoEX::setEnablePin(int pin){
-	enPin=pin;
-	syslog(LOG_NOTICE,"DominoEX: Set enable pin to %d",enPin); 
+	if (dominoex_run==false){
+		enPin=pin;
+		syslog(LOG_NOTICE,"DominoEX: Set enable pin to %d",enPin); 
+	} else {
+		syslog(LOG_ERR,"DominoEX(setEnablePin): Module must be stopped before changing the enable pin"); 
+	}
 }
 
 void DominoEX::setDataPin(int pin){
-	dataPin=pin;
-	syslog(LOG_NOTICE,"DominoEX: Set data pin to %d",dataPin); 
+	if (dominoex_run==false){
+		dataPin=pin;
+		syslog(LOG_NOTICE,"DominoEX: Set data pin to %d",dataPin); 
+	} else {
+		syslog(LOG_ERR,"DominoEX(setEnablePin): Module must be stopped before changing the enable pin"); 
+	}
 }
 
 void DominoEX::sendString(char *send){
