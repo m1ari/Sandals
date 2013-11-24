@@ -5,6 +5,8 @@ This is a High Altitude Balloon payload tracker written in multithreaded C++ des
 
 The code has been succesfully tested on the ground running two RTTY modules at 600 baud or a single RTTY module and single DominoEX module (NB: using the gpio header it's only possible to use a single DominoEX radio as this requires PWM).
 
+Further Details of this Project (and flights when they happen) will be details on the [Project Website] [2]
+
 No warranty of the fitness of this code for any purpose is given, As it's directly accessing the memory used for the GPIO interface it could cause kernel panics (or worse), backup and backup often. You have been warned!
 
 GPS Class
@@ -33,25 +35,21 @@ This class run's with a higher priority as it relies on reasonably accurate timi
 
 DominoEX Class
 --------------
+Connect NTX2B data pin to the PWN output (GPIO18) via a 10K resistor, This reduces Logic High on the NTX2B to 3V.
 
+* DominoEX
+  * Require small and accurate shifts as well as accurate timing.
+  * 18 tones, Next tone is (current + 2 + nibble) % 18
+  * Tone spacing and timing is based on the Baud rate (15.625 for DominoEX16)
 
-* DominoEX16
- * Small shifts needed
- * 18 tones with 355Hz BW
- * Tones increase by the value in the lookup table + 2 * baud, if new tone >18 remove 18 from the value
- * Baud for DomEx16 is 15.625 (0.0078125V per tone)
- * Tone spacing matches Baud rate - 0.0078125V per tone for NTX2 (2000Hz/V)
+Use PWM range to configure the tone spacing
+Range should be: 3 / ( baud /2000 )
+For DominoEx16 this comes to 384: (3 / (15.625 /2000)
 
-Logic High is 3v3 using a 10K resistor between the GPIO pin and NTX2B makes this 3V0 for the NTX2B
+With the Logic capped at 3V, DomEX4, DomEX6 and DomEX16 have good values
 
- Over 1s
- -> 1V needs on 1/3.3 of the time
- .1v needs on 1/33 of the time
+The Detailed DominoEX Spec (and details of other Domino Versions can be found [here] [3] and [here] [4]
 
- Per tone 0.00236742424242424242424242424242V
- Need to go high once every 422.4 Cycles
-
-   * Run at multiple of 6600Hz (allows Baud * minimum PWN Rate Required)
 
 Sentence Structure
 ------------------
@@ -62,14 +60,14 @@ $$$SANDALS,counter,time,latitude,longitude,altitude,sats,flags*checksum
 flags is made up by adding powers of 2:
 | Power2 | Hex     | Use       |
 | ------ | ------- | ----------|
-|2^0     | 0x01    | GPS Lock  |
-|2^1     | 0x02    | Undefined  
-|2^2     | 0x04    | Undefined |
-|2^3     | 0x08    | Undefined |
-|2^4     | 0x10    | Undefined |
-|2^5     | 0x20    | Undefined |
-|2^6     | 0x40    | Undefined |
-|2^7     | 0x80    | Undefined |
+| 2^0    | 0x01    | GPS Lock  |
+| 2^1    | 0x02    | Undefined  
+| 2^2    | 0x04    | Undefined |
+| 2^3    | 0x08    | Undefined |
+| 2^4    | 0x10    | Undefined |
+| 2^5    | 0x20    | Undefined |
+| 2^6    | 0x40    | Undefined |
+| 2^7    | 0x80    | Undefined |
 
 
 
@@ -102,3 +100,6 @@ RTTY (PWM or kernel module)
 
 
 [1]: http://ukhas.org.uk/guides:linkingarduinotontx2
+[2]: http://m1ari.co.uk/projects/pi-tracker
+[3]: http://www.qsl.net/zl1bpu/MFSK/DEX.htm
+[4]: http://dl4dss.blogspot.ie/2006/12/dominoex.html
