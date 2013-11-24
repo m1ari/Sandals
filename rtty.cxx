@@ -222,8 +222,8 @@ void RTTY::txbyte(char byte){
 
 void RTTY::setBaud(int in){
 	baud=in;
-	//baud_delay=(1000000/in)*0.975;
-	baud_delay=(1000000/in);
+	baud_delay=(1000000/in)*0.975;
+	//baud_delay=(1000000/in);
 	syslog(LOG_NOTICE,"RTTY: Set Baud to %d (%duS)",baud,baud_delay); 
 }
 
