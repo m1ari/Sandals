@@ -58,6 +58,7 @@ Standard sentence looks like
 $$$SANDALS,counter,time,latitude,longitude,altitude,sats,flags*checksum
 
 flags is made up by adding powers of 2:
+
 | Power2 | Hex     | Use       |
 | ------ | ------- | ----------|
 | 2^0    | 0x01    | GPS Lock  |
