@@ -42,14 +42,14 @@ int main (int argc, char **argv){
 	gps.Setup();
 	gps.Run();
 
-	ntx2.setBaud(50);
+	ntx2.setBaud(600);
 	ntx2.setBits(7);
 	ntx2.setStopBits(2);
 	ntx2.setEnablePin(25);
 	ntx2.setDataPin(24);
 	ntx2.Run();
 
-	//ntx2b.setBaud(300);	// Not currently used for DominoEX
+	ntx2b.setBaud(16);
 	ntx2b.setEnablePin(23);
 	ntx2b.setDataPin(18);
 	ntx2b.Run();
@@ -126,7 +126,7 @@ int main (int argc, char **argv){
 			}
 		}
 */
-		sleep(2);
+		sleep(1);
 	}
 
 	gps.Stop();
