@@ -107,6 +107,13 @@ void delayMicroseconds (unsigned int howLong) {
 	}
 }
 
+void setPWMRange(volatile unsigned *pwm, unsigned int range){
+	*(pwm + PWM0_RANGE) = range;
+	delayMicroseconds(10);
+
+}
+
+
 void SetupPWM(){
 	uint32_t pwm_control;
 
@@ -122,10 +129,7 @@ void SetupPWM(){
 	//*(pwm + PWM_CONTROL) = PWM0_MS_MODE|PWM0_ENABLE;	// Mark Space mode (High for Data, then Low until Range)
 	//*(pwm + PWM_CONTROL) = PWM0_SERIAL|PWM0_ENABLE;	// Serializer mode
 
-// setRange (1024)
-	// filled with 0 for 20 milliseconds = 320 bits
-	*(pwm + PWM0_RANGE) = 384;	// 1024 in WiringPi
-	delayMicroseconds(10);
+	setPWMRange(pwm, 384);
 
 //setClock(32)	- 19.2 /32 = 600khz
 	// Preserve Current Control

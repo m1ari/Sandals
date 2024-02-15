@@ -47,6 +47,7 @@ extern "C" {
 	void delayMicrosecondsHard (unsigned int howLong);
 	void delayMicroseconds (unsigned int howLong);
 	void SetupPWM();
+	void setPWMRange(volatile unsigned *pwm, unsigned int range);
 }
 
 /* Addresses from:
