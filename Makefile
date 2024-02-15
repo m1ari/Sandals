@@ -4,7 +4,7 @@ CC=g++
 #LDFLAGS=-L/usr/local/lib -R/usr/local/lib
 LIBS=-lpthread
 
-OBJS=gps.o sandals.o gpsPosition.o rtty.o gpio.o dominoex.o
+OBJS=crc.o dominoex.o gpio.o gps.o gpsPosition.o rtty.o sandals.o
 TARGETS=sandals
 
 all: $(TARGETS)

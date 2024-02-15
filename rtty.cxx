@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <sched.h>
 #include "rtty.h"
+#include "crc.h"
 #include "gpio.h"
 
 using namespace std;
@@ -67,34 +68,6 @@ void RTTY::Run(){
 			syslog(LOG_ERR,"RTTY: Data Pin not Configured, Not starting RTTY");
 		}
 	}
-}
-
-unsigned short int RTTY::crc16(char *data){
-	int firstchar=0;
-
-	// Get first non $
-	while(data[firstchar]=='$'){
-		firstchar++;
-	}
-
-	unsigned short int crc=0xFFFF;
-	unsigned int i;
-	for (i=firstchar; i<strlen(data); i++){
-		crc=crc16_update(crc, data[i]);
-	}
-	return(crc);
-}
-
-unsigned short int RTTY::crc16_update(unsigned short int crc, char c){
-	int i;
-	crc = crc ^ ((unsigned short int)c << 8);
-	for (i=0; i<8; i++) {
-		if (crc & 0x8000)
-			crc = (crc << 1) ^ 0x1021;
-		else
-			crc <<= 1;
-	}
-	return crc;
 }
 
 void* RTTY::entryPoint(void *pthis){

@@ -19,8 +19,6 @@ class RTTY {
 
 		void txbit(int bit);
 		void txbyte(char byte);
-		unsigned short int crc16(char *data);
-		unsigned short int crc16_update(unsigned short int crc, char c);
 
 		pthread_t threadid;
 		pthread_mutex_t m_nextString;
